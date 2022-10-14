@@ -1,0 +1,39 @@
+version: '3'
+services:
+    isa-bookapp-db:
+      image: mariadb:10.4.4
+      container_name: isa-bookapp-db-dev
+      restart: unless-stopped
+      environment:
+        - MYSQL_USER=root
+        - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+        - MYSQL_ROOT_PASSWORD=
+        - MYSQL_DATABASE=bookapp
+      command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp --default_time_zone=-03:00 --net-read-timeout=60 --net-write-timeout=120 --max-allowed-packet=536870912 --wait-timeout=1850 --interactive-timeout=1850
+      networks:
+        - isa-bookapp-backend-dev
+      volumes:
+        - mariadb-isa-bookapp:/var/lib/mysql
+
+    isa-bookapp-backend:
+      image: jhipster/jhipster
+      container_name: isa-bookapp-backend-dev
+      restart: unless-stopped
+      depends_on:
+        - isa-bookapp-db
+      ports:
+        - '8080:8080'
+        - '9000:9000'
+        - '3001:3001'
+      networks:
+        - isa-bookapp-backend-dev
+      volumes:
+        - ~/Facultad/Ingenieria-Software-Aplicada/isa-bookapp:/home/jhipster/app
+        - ~/Facultad/Ingenieria-Software-Aplicada/isa-bookapp/.m2:/home/jhipster/.m2
+
+networks:
+  isa-bookapp-backend-dev:
+    driver: 'bridge'
+
+volumes:
+  mariadb-isa-bookapp:
