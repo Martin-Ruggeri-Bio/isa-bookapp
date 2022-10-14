@@ -1,8 +1,8 @@
 application {
   config {
-    baseName blog
+    baseName bookapp
     applicationType monolith
-    packageName ar.edu.um.isa.blog
+    packageName ar.edu.um.isa.bookapp
     buildTool maven,
     devDatabaseType mariadb,
     prodDatabaseType mariadb,
@@ -16,9 +16,8 @@ application {
   entities *
 }
 
-entity Blog {
+entity Profile {
   name String required minlength(3)
-  handle String required minlength(2)
 }
 
 entity Post {
@@ -32,12 +31,14 @@ entity Tag {
 }
 
 relationship ManyToOne {
-  Blog{user(login)} to User
-  Post{blog(name)} to Blog
+  Post{profile(name)} to Profile{post(title)}
 }
-
+relationship OneToOne {
+  Profile{user(login)} to User
+}
 relationship ManyToMany {
   Post{tag(name)} to Tag{entry}
+  Profile{folowers(name)} to Profile{folowing(name)}
 }
-
-paginate Post, Tag with infinite-scroll
+service Post, Tag, Profile with serviceClass
+paginate Post, Tag, Profile with infinite-scroll
