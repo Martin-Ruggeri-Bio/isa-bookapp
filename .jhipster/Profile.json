@@ -1,0 +1,61 @@
+{
+  "applications": ["bookapp"],
+  "changelogDate": "20221015152546",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "profile",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength"],
+      "fieldValidateRulesMinlength": "3"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Profile",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "profile",
+      "otherEntityRelationshipName": "folowing",
+      "ownerSide": true,
+      "relationshipName": "folowers",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "title",
+      "otherEntityName": "post",
+      "otherEntityRelationshipName": "author",
+      "relationshipName": "post",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityField": "title",
+      "otherEntityName": "post",
+      "otherEntityRelationshipName": "like",
+      "ownerSide": false,
+      "relationshipName": "like",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "profile",
+      "otherEntityRelationshipName": "folowers",
+      "ownerSide": false,
+      "relationshipName": "folowing",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

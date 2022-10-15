@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="post">
+      <h2 data-cy="postDetailsHeading"><span jhiTranslate="bookappApp.post.detail.title">Post</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ post.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookappApp.post.title">Title</span></dt>
+        <dd>
+          <span>{{ post.title }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookappApp.post.content">Content</span></dt>
+        <dd>
+          <span>{{ post.content }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookappApp.post.date">Date</span></dt>
+        <dd>
+          <span>{{ post.date | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookappApp.post.author">Author</span></dt>
+        <dd>
+          <div *ngIf="post.author">
+            <a [routerLink]="['/profile', post.author.id, 'view']">{{ post.author?.name }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="bookappApp.post.tag">Tag</span></dt>
+        <dd>
+          <span *ngFor="let tag of post.tags; let last = last">
+            <a [routerLink]="['/tag', tag.id, 'view']">{{ tag.name }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+        <dt><span jhiTranslate="bookappApp.post.like">Like</span></dt>
+        <dd>
+          <span *ngFor="let like of post.likes; let last = last">
+            <a [routerLink]="['/profile', like.id, 'view']">{{ like.name }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+      </button>
+
+      <button type="button" [routerLink]="['/post', post.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+      </button>
+    </div>
+  </div>
+</div>

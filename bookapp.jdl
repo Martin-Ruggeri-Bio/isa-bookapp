@@ -31,13 +31,14 @@ entity Tag {
 }
 
 relationship ManyToOne {
-  Post{profile(name)} to Profile{post(title)}
+  Post{author(name)} to Profile{post(title)}
 }
 relationship OneToOne {
   Profile{user(login)} to User
 }
 relationship ManyToMany {
   Post{tag(name)} to Tag{entry}
+  Post{like(name)} to Profile{like(title)}
   Profile{folowers(name)} to Profile{folowing(name)}
 }
 service Post, Tag, Profile with serviceClass
