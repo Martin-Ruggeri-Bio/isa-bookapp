@@ -592,7 +592,15 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>bookapp:latest</image>
+                            <image>martinr2020/boockapp_ci:latest</image>
+                            <tags>
+                                <tag>${project.version}</tag>
+                                <tag>latest</tag>
+                            </tags>
+                            <auth>
+                                <username>${martinr2020}</username>
+                                <password>${martin_enzo}</password>
+                            </auth>
                         </to>
                         <container>
                             <entrypoint>
