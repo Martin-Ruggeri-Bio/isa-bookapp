@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ar.edu.um.isa.bookapp.IntegrationTest;
 import ar.edu.um.isa.bookapp.domain.Post;
 import ar.edu.um.isa.bookapp.repository.PostRepository;
-import ar.edu.um.isa.bookapp.service.PostService;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -62,9 +61,6 @@ class PostResourceIT {
 
     @Mock
     private PostRepository postRepositoryMock;
-
-    @Mock
-    private PostService postServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -190,16 +186,16 @@ class PostResourceIT {
 
     @SuppressWarnings({ "unchecked" })
     void getAllPostsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(postServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(postRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restPostMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
 
-        verify(postServiceMock, times(1)).findAllWithEagerRelationships(any());
+        verify(postRepositoryMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @SuppressWarnings({ "unchecked" })
     void getAllPostsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(postServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(postRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restPostMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
         verify(postRepositoryMock, times(1)).findAll(any(Pageable.class));

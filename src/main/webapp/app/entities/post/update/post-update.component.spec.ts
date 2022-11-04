@@ -55,14 +55,12 @@ describe('Post Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Profile query and add missing value', () => {
       const post: IPost = { id: 456 };
-      const author: IProfile = { id: 80057 };
-      post.author = author;
-      const likes: IProfile[] = [{ id: 80240 }];
-      post.likes = likes;
+      const profile: IProfile = { id: 80057 };
+      post.profile = profile;
 
-      const profileCollection: IProfile[] = [{ id: 42179 }];
+      const profileCollection: IProfile[] = [{ id: 80240 }];
       jest.spyOn(profileService, 'query').mockReturnValue(of(new HttpResponse({ body: profileCollection })));
-      const additionalProfiles = [author, ...likes];
+      const additionalProfiles = [profile];
       const expectedCollection: IProfile[] = [...additionalProfiles, ...profileCollection];
       jest.spyOn(profileService, 'addProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -98,18 +96,15 @@ describe('Post Management Update Component', () => {
 
     it('Should update editForm', () => {
       const post: IPost = { id: 456 };
-      const author: IProfile = { id: 46729 };
-      post.author = author;
-      const like: IProfile = { id: 17034 };
-      post.likes = [like];
+      const profile: IProfile = { id: 42179 };
+      post.profile = profile;
       const tag: ITag = { id: 55034 };
       post.tags = [tag];
 
       activatedRoute.data = of({ post });
       comp.ngOnInit();
 
-      expect(comp.profilesSharedCollection).toContain(author);
-      expect(comp.profilesSharedCollection).toContain(like);
+      expect(comp.profilesSharedCollection).toContain(profile);
       expect(comp.tagsSharedCollection).toContain(tag);
       expect(comp.post).toEqual(post);
     });

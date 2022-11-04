@@ -7,9 +7,8 @@ export interface IPost {
   title?: string | null;
   content?: string | null;
   date?: dayjs.Dayjs | null;
-  author?: Pick<IProfile, 'id' | 'name'> | null;
+  profile?: Pick<IProfile, 'id' | 'name'> | null;
   tags?: Pick<ITag, 'id' | 'name'>[] | null;
-  likes?: Pick<IProfile, 'id' | 'name'>[] | null;
 }
 
 export type NewPost = Omit<IPost, 'id'> & { id: null };

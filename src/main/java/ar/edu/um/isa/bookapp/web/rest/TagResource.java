@@ -2,7 +2,6 @@ package ar.edu.um.isa.bookapp.web.rest;
 
 import ar.edu.um.isa.bookapp.domain.Tag;
 import ar.edu.um.isa.bookapp.repository.TagRepository;
-import ar.edu.um.isa.bookapp.service.TagService;
 import ar.edu.um.isa.bookapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,6 +30,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TagResource {
 
     private final Logger log = LoggerFactory.getLogger(TagResource.class);
@@ -39,12 +40,9 @@ public class TagResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final TagService tagService;
-
     private final TagRepository tagRepository;
 
-    public TagResource(TagService tagService, TagRepository tagRepository) {
-        this.tagService = tagService;
+    public TagResource(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
 
@@ -61,7 +59,7 @@ public class TagResource {
         if (tag.getId() != null) {
             throw new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Tag result = tagService.save(tag);
+        Tag result = tagRepository.save(tag);
         return ResponseEntity
             .created(new URI("/api/tags/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -93,7 +91,7 @@ public class TagResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Tag result = tagService.update(tag);
+        Tag result = tagRepository.save(tag);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, tag.getId().toString()))
@@ -126,7 +124,16 @@ public class TagResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Tag> result = tagService.partialUpdate(tag);
+        Optional<Tag> result = tagRepository
+            .findById(tag.getId())
+            .map(existingTag -> {
+                if (tag.getName() != null) {
+                    existingTag.setName(tag.getName());
+                }
+
+                return existingTag;
+            })
+            .map(tagRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -143,7 +150,7 @@ public class TagResource {
     @GetMapping("/tags")
     public ResponseEntity<List<Tag>> getAllTags(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Tags");
-        Page<Tag> page = tagService.findAll(pageable);
+        Page<Tag> page = tagRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -157,7 +164,7 @@ public class TagResource {
     @GetMapping("/tags/{id}")
     public ResponseEntity<Tag> getTag(@PathVariable Long id) {
         log.debug("REST request to get Tag : {}", id);
-        Optional<Tag> tag = tagService.findOne(id);
+        Optional<Tag> tag = tagRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(tag);
     }
 
@@ -170,7 +177,7 @@ public class TagResource {
     @DeleteMapping("/tags/{id}")
     public ResponseEntity<Void> deleteTag(@PathVariable Long id) {
         log.debug("REST request to delete Tag : {}", id);
-        tagService.delete(id);
+        tagRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

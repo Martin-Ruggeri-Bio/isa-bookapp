@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ar.edu.um.isa.bookapp.IntegrationTest;
 import ar.edu.um.isa.bookapp.domain.Profile;
 import ar.edu.um.isa.bookapp.repository.ProfileRepository;
-import ar.edu.um.isa.bookapp.service.ProfileService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -53,9 +52,6 @@ class ProfileResourceIT {
 
     @Mock
     private ProfileRepository profileRepositoryMock;
-
-    @Mock
-    private ProfileService profileServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -160,16 +156,16 @@ class ProfileResourceIT {
 
     @SuppressWarnings({ "unchecked" })
     void getAllProfilesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(profileServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(profileRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restProfileMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
 
-        verify(profileServiceMock, times(1)).findAllWithEagerRelationships(any());
+        verify(profileRepositoryMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @SuppressWarnings({ "unchecked" })
     void getAllProfilesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(profileServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(profileRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restProfileMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
         verify(profileRepositoryMock, times(1)).findAll(any(Pageable.class));

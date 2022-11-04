@@ -8,9 +8,9 @@
     -->
     <changeSet id="20221015152646-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="author_id"
+        <addForeignKeyConstraint baseColumnNames="profile_id"
                                  baseTableName="post"
-                                 constraintName="fk_post__author_id"
+                                 constraintName="fk_post__profile_id"
                                  referencedColumnNames="id"
                                  referencedTableName="profile"/>
 
@@ -25,17 +25,5 @@
                                  constraintName="fk_rel_post__tag__tag_id"
                                  referencedColumnNames="id"
                                  referencedTableName="tag"/>
-
-        <addForeignKeyConstraint baseColumnNames="post_id"
-                                 baseTableName="rel_post__like"
-                                 constraintName="fk_rel_post__like__post_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="post"/>
-
-        <addForeignKeyConstraint baseColumnNames="like_id"
-                                 baseTableName="rel_post__like"
-                                 constraintName="fk_rel_post__like__like_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="profile"/>
     </changeSet>
 </databaseChangeLog>

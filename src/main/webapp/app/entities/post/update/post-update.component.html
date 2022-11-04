@@ -65,13 +65,13 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" jhiTranslate="bookappApp.post.author" for="field_author">Author</label>
+          <label class="form-label" jhiTranslate="bookappApp.post.profile" for="field_profile">Profile</label>
           <select
             class="form-control"
-            id="field_author"
-            data-cy="author"
-            name="author"
-            formControlName="author"
+            id="field_profile"
+            data-cy="profile"
+            name="profile"
+            formControlName="profile"
             [compareWith]="compareProfile"
           >
             <option [ngValue]="null"></option>
@@ -83,21 +83,6 @@
           <label jhiTranslate="bookappApp.post.tag" for="field_tags">Tag</label>
           <select class="form-control" id="field_tags" data-cy="tag" multiple name="tags" formControlName="tags" [compareWith]="compareTag">
             <option [ngValue]="tagOption" *ngFor="let tagOption of tagsSharedCollection">{{ tagOption.name }}</option>
-          </select>
-        </div>
-
-        <div class="row mb-3">
-          <label jhiTranslate="bookappApp.post.like" for="field_likes">Like</label>
-          <select
-            class="form-control"
-            id="field_likes"
-            data-cy="like"
-            multiple
-            name="likes"
-            formControlName="likes"
-            [compareWith]="compareProfile"
-          >
-            <option [ngValue]="profileOption" *ngFor="let profileOption of profilesSharedCollection">{{ profileOption.name }}</option>
           </select>
         </div>
       </div>

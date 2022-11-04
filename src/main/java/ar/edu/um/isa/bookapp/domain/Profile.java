@@ -41,22 +41,17 @@ public class Profile implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "folowers_id")
     )
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "likes", "folowings" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "folowings" }, allowSetters = true)
     private Set<Profile> folowers = new HashSet<>();
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "profile")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "author", "tags", "likes" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "profile", "tags" }, allowSetters = true)
     private Set<Post> posts = new HashSet<>();
-
-    @ManyToMany(mappedBy = "likes")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "author", "tags", "likes" }, allowSetters = true)
-    private Set<Post> likes = new HashSet<>();
 
     @ManyToMany(mappedBy = "folowers")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "likes", "folowings" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "folowings" }, allowSetters = true)
     private Set<Profile> folowings = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -131,10 +126,10 @@ public class Profile implements Serializable {
 
     public void setPosts(Set<Post> posts) {
         if (this.posts != null) {
-            this.posts.forEach(i -> i.setAuthor(null));
+            this.posts.forEach(i -> i.setProfile(null));
         }
         if (posts != null) {
-            posts.forEach(i -> i.setAuthor(this));
+            posts.forEach(i -> i.setProfile(this));
         }
         this.posts = posts;
     }
@@ -146,44 +141,13 @@ public class Profile implements Serializable {
 
     public Profile addPost(Post post) {
         this.posts.add(post);
-        post.setAuthor(this);
+        post.setProfile(this);
         return this;
     }
 
     public Profile removePost(Post post) {
         this.posts.remove(post);
-        post.setAuthor(null);
-        return this;
-    }
-
-    public Set<Post> getLikes() {
-        return this.likes;
-    }
-
-    public void setLikes(Set<Post> posts) {
-        if (this.likes != null) {
-            this.likes.forEach(i -> i.removeLike(this));
-        }
-        if (posts != null) {
-            posts.forEach(i -> i.addLike(this));
-        }
-        this.likes = posts;
-    }
-
-    public Profile likes(Set<Post> posts) {
-        this.setLikes(posts);
-        return this;
-    }
-
-    public Profile addLike(Post post) {
-        this.likes.add(post);
-        post.getLikes().add(this);
-        return this;
-    }
-
-    public Profile removeLike(Post post) {
-        this.likes.remove(post);
-        post.getLikes().remove(this);
+        post.setProfile(null);
         return this;
     }
 

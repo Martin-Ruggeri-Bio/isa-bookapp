@@ -1,5 +1,5 @@
 {
-  "applications": ["bookapp"],
+  "applications": "*",
   "changelogDate": "20221015152546",
   "dto": "no",
   "embedded": false,
@@ -36,17 +36,9 @@
     {
       "otherEntityField": "title",
       "otherEntityName": "post",
-      "otherEntityRelationshipName": "author",
+      "otherEntityRelationshipName": "profile",
       "relationshipName": "post",
       "relationshipType": "one-to-many"
-    },
-    {
-      "otherEntityField": "title",
-      "otherEntityName": "post",
-      "otherEntityRelationshipName": "like",
-      "ownerSide": false,
-      "relationshipName": "like",
-      "relationshipType": "many-to-many"
     },
     {
       "otherEntityField": "name",
@@ -57,5 +49,5 @@
       "relationshipType": "many-to-many"
     }
   ],
-  "service": "serviceClass"
+  "service": "no"
 }

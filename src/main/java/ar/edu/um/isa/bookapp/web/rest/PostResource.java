@@ -2,7 +2,6 @@ package ar.edu.um.isa.bookapp.web.rest;
 
 import ar.edu.um.isa.bookapp.domain.Post;
 import ar.edu.um.isa.bookapp.repository.PostRepository;
-import ar.edu.um.isa.bookapp.service.PostService;
 import ar.edu.um.isa.bookapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,6 +30,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class PostResource {
 
     private final Logger log = LoggerFactory.getLogger(PostResource.class);
@@ -39,12 +40,9 @@ public class PostResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PostService postService;
-
     private final PostRepository postRepository;
 
-    public PostResource(PostService postService, PostRepository postRepository) {
-        this.postService = postService;
+    public PostResource(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
@@ -61,7 +59,7 @@ public class PostResource {
         if (post.getId() != null) {
             throw new BadRequestAlertException("A new post cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Post result = postService.save(post);
+        Post result = postRepository.save(post);
         return ResponseEntity
             .created(new URI("/api/posts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -93,7 +91,7 @@ public class PostResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Post result = postService.update(post);
+        Post result = postRepository.save(post);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, post.getId().toString()))
@@ -128,7 +126,22 @@ public class PostResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Post> result = postService.partialUpdate(post);
+        Optional<Post> result = postRepository
+            .findById(post.getId())
+            .map(existingPost -> {
+                if (post.getTitle() != null) {
+                    existingPost.setTitle(post.getTitle());
+                }
+                if (post.getContent() != null) {
+                    existingPost.setContent(post.getContent());
+                }
+                if (post.getDate() != null) {
+                    existingPost.setDate(post.getDate());
+                }
+
+                return existingPost;
+            })
+            .map(postRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -151,9 +164,9 @@ public class PostResource {
         log.debug("REST request to get a page of Posts");
         Page<Post> page;
         if (eagerload) {
-            page = postService.findAllWithEagerRelationships(pageable);
+            page = postRepository.findAllWithEagerRelationships(pageable);
         } else {
-            page = postService.findAll(pageable);
+            page = postRepository.findAll(pageable);
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -168,7 +181,7 @@ public class PostResource {
     @GetMapping("/posts/{id}")
     public ResponseEntity<Post> getPost(@PathVariable Long id) {
         log.debug("REST request to get Post : {}", id);
-        Optional<Post> post = postService.findOne(id);
+        Optional<Post> post = postRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(post);
     }
 
@@ -181,7 +194,7 @@ public class PostResource {
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         log.debug("REST request to delete Post : {}", id);
-        postService.delete(id);
+        postRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

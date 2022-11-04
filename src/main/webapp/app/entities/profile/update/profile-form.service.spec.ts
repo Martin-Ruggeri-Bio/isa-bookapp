@@ -23,7 +23,6 @@ describe('Profile Form Service', () => {
             name: expect.any(Object),
             user: expect.any(Object),
             folowers: expect.any(Object),
-            likes: expect.any(Object),
             folowings: expect.any(Object),
           })
         );
@@ -38,7 +37,6 @@ describe('Profile Form Service', () => {
             name: expect.any(Object),
             user: expect.any(Object),
             folowers: expect.any(Object),
-            likes: expect.any(Object),
             folowings: expect.any(Object),
           })
         );

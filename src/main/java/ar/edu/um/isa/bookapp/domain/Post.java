@@ -39,20 +39,14 @@ public class Post implements Serializable {
     private Instant date;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "likes", "folowings" }, allowSetters = true)
-    private Profile author;
+    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "folowings" }, allowSetters = true)
+    private Profile profile;
 
     @ManyToMany
     @JoinTable(name = "rel_post__tag", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "entries" }, allowSetters = true)
     private Set<Tag> tags = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "rel_post__like", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "like_id"))
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "user", "folowers", "posts", "likes", "folowings" }, allowSetters = true)
-    private Set<Profile> likes = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -108,16 +102,16 @@ public class Post implements Serializable {
         this.date = date;
     }
 
-    public Profile getAuthor() {
-        return this.author;
+    public Profile getProfile() {
+        return this.profile;
     }
 
-    public void setAuthor(Profile profile) {
-        this.author = profile;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
-    public Post author(Profile profile) {
-        this.setAuthor(profile);
+    public Post profile(Profile profile) {
+        this.setProfile(profile);
         return this;
     }
 
@@ -143,31 +137,6 @@ public class Post implements Serializable {
     public Post removeTag(Tag tag) {
         this.tags.remove(tag);
         tag.getEntries().remove(this);
-        return this;
-    }
-
-    public Set<Profile> getLikes() {
-        return this.likes;
-    }
-
-    public void setLikes(Set<Profile> profiles) {
-        this.likes = profiles;
-    }
-
-    public Post likes(Set<Profile> profiles) {
-        this.setLikes(profiles);
-        return this;
-    }
-
-    public Post addLike(Profile profile) {
-        this.likes.add(profile);
-        profile.getLikes().add(this);
-        return this;
-    }
-
-    public Post removeLike(Profile profile) {
-        this.likes.remove(profile);
-        profile.getLikes().remove(this);
         return this;
     }
 

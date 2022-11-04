@@ -107,8 +107,7 @@ export class PostUpdateComponent implements OnInit {
 
     this.profilesSharedCollection = this.profileService.addProfileToCollectionIfMissing<IProfile>(
       this.profilesSharedCollection,
-      post.author,
-      ...(post.likes ?? [])
+      post.profile
     );
     this.tagsSharedCollection = this.tagService.addTagToCollectionIfMissing<ITag>(this.tagsSharedCollection, ...(post.tags ?? []));
   }
@@ -117,11 +116,7 @@ export class PostUpdateComponent implements OnInit {
     this.profileService
       .query()
       .pipe(map((res: HttpResponse<IProfile[]>) => res.body ?? []))
-      .pipe(
-        map((profiles: IProfile[]) =>
-          this.profileService.addProfileToCollectionIfMissing<IProfile>(profiles, this.post?.author, ...(this.post?.likes ?? []))
-        )
-      )
+      .pipe(map((profiles: IProfile[]) => this.profileService.addProfileToCollectionIfMissing<IProfile>(profiles, this.post?.profile)))
       .subscribe((profiles: IProfile[]) => (this.profilesSharedCollection = profiles));
 
     this.tagService

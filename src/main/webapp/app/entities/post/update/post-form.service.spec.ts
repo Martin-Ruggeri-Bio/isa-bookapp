@@ -23,9 +23,8 @@ describe('Post Form Service', () => {
             title: expect.any(Object),
             content: expect.any(Object),
             date: expect.any(Object),
-            author: expect.any(Object),
+            profile: expect.any(Object),
             tags: expect.any(Object),
-            likes: expect.any(Object),
           })
         );
       });
@@ -39,9 +38,8 @@ describe('Post Form Service', () => {
             title: expect.any(Object),
             content: expect.any(Object),
             date: expect.any(Object),
-            author: expect.any(Object),
+            profile: expect.any(Object),
             tags: expect.any(Object),
-            likes: expect.any(Object),
           })
         );
       });

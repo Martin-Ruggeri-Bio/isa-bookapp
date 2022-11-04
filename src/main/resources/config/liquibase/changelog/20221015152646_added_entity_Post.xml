@@ -23,7 +23,7 @@
             <column name="date" type="${datetimeType}">
                 <constraints nullable="false" />
             </column>
-            <column name="author_id" type="bigint">
+            <column name="profile_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -43,17 +43,6 @@
         </createTable>
 
         <addPrimaryKey columnNames="post_id, tag_id" tableName="rel_post__tag"/>
-
-        <createTable tableName="rel_post__like">
-            <column name="like_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="post_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="post_id, like_id" tableName="rel_post__like"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

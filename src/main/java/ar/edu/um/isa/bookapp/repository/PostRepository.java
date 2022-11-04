@@ -30,14 +30,14 @@ public interface PostRepository extends PostRepositoryWithBagRelationships, JpaR
     }
 
     @Query(
-        value = "select distinct post from Post post left join fetch post.author",
+        value = "select distinct post from Post post left join fetch post.profile",
         countQuery = "select count(distinct post) from Post post"
     )
     Page<Post> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select distinct post from Post post left join fetch post.author")
+    @Query("select distinct post from Post post left join fetch post.profile")
     List<Post> findAllWithToOneRelationships();
 
-    @Query("select post from Post post left join fetch post.author where post.id =:id")
+    @Query("select post from Post post left join fetch post.profile where post.id =:id")
     Optional<Post> findOneWithToOneRelationships(@Param("id") Long id);
 }

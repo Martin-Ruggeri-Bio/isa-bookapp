@@ -26,23 +26,16 @@
         <dd>
           <span>{{ post.date | formatMediumDatetime }}</span>
         </dd>
-        <dt><span jhiTranslate="bookappApp.post.author">Author</span></dt>
+        <dt><span jhiTranslate="bookappApp.post.profile">Profile</span></dt>
         <dd>
-          <div *ngIf="post.author">
-            <a [routerLink]="['/profile', post.author.id, 'view']">{{ post.author?.name }}</a>
+          <div *ngIf="post.profile">
+            <a [routerLink]="['/profile', post.profile.id, 'view']">{{ post.profile?.name }}</a>
           </div>
         </dd>
         <dt><span jhiTranslate="bookappApp.post.tag">Tag</span></dt>
         <dd>
           <span *ngFor="let tag of post.tags; let last = last">
             <a [routerLink]="['/tag', tag.id, 'view']">{{ tag.name }}</a
-            >{{ last ? '' : ', ' }}
-          </span>
-        </dd>
-        <dt><span jhiTranslate="bookappApp.post.like">Like</span></dt>
-        <dd>
-          <span *ngFor="let like of post.likes; let last = last">
-            <a [routerLink]="['/profile', like.id, 'view']">{{ like.name }}</a
             >{{ last ? '' : ', ' }}
           </span>
         </dd>

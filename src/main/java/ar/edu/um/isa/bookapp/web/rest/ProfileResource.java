@@ -2,7 +2,6 @@ package ar.edu.um.isa.bookapp.web.rest;
 
 import ar.edu.um.isa.bookapp.domain.Profile;
 import ar.edu.um.isa.bookapp.repository.ProfileRepository;
-import ar.edu.um.isa.bookapp.service.ProfileService;
 import ar.edu.um.isa.bookapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,6 +30,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class ProfileResource {
 
     private final Logger log = LoggerFactory.getLogger(ProfileResource.class);
@@ -39,12 +40,9 @@ public class ProfileResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final ProfileService profileService;
-
     private final ProfileRepository profileRepository;
 
-    public ProfileResource(ProfileService profileService, ProfileRepository profileRepository) {
-        this.profileService = profileService;
+    public ProfileResource(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
 
@@ -61,7 +59,7 @@ public class ProfileResource {
         if (profile.getId() != null) {
             throw new BadRequestAlertException("A new profile cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Profile result = profileService.save(profile);
+        Profile result = profileRepository.save(profile);
         return ResponseEntity
             .created(new URI("/api/profiles/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -95,7 +93,7 @@ public class ProfileResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Profile result = profileService.update(profile);
+        Profile result = profileRepository.save(profile);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, profile.getId().toString()))
@@ -130,7 +128,16 @@ public class ProfileResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Profile> result = profileService.partialUpdate(profile);
+        Optional<Profile> result = profileRepository
+            .findById(profile.getId())
+            .map(existingProfile -> {
+                if (profile.getName() != null) {
+                    existingProfile.setName(profile.getName());
+                }
+
+                return existingProfile;
+            })
+            .map(profileRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -153,9 +160,9 @@ public class ProfileResource {
         log.debug("REST request to get a page of Profiles");
         Page<Profile> page;
         if (eagerload) {
-            page = profileService.findAllWithEagerRelationships(pageable);
+            page = profileRepository.findAllWithEagerRelationships(pageable);
         } else {
-            page = profileService.findAll(pageable);
+            page = profileRepository.findAll(pageable);
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -170,7 +177,7 @@ public class ProfileResource {
     @GetMapping("/profiles/{id}")
     public ResponseEntity<Profile> getProfile(@PathVariable Long id) {
         log.debug("REST request to get Profile : {}", id);
-        Optional<Profile> profile = profileService.findOne(id);
+        Optional<Profile> profile = profileRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(profile);
     }
 
@@ -183,7 +190,7 @@ public class ProfileResource {
     @DeleteMapping("/profiles/{id}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         log.debug("REST request to delete Profile : {}", id);
-        profileService.delete(id);
+        profileRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

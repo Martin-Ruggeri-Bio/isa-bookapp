@@ -21,9 +21,8 @@
       "title": "Title",
       "content": "Content",
       "date": "Date",
-      "author": "Author",
-      "tag": "Tag",
-      "like": "Like"
+      "profile": "Profile",
+      "tag": "Tag"
     }
   }
 }

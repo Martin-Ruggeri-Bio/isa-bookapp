@@ -38,8 +38,8 @@
             <span jhiTranslate="bookappApp.post.content">Content</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col" jhiSortBy="date"><span jhiTranslate="bookappApp.post.date">Date</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="author.name">
-            <span jhiTranslate="bookappApp.post.author">Author</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col" jhiSortBy="profile.name">
+            <span jhiTranslate="bookappApp.post.profile">Profile</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col"></th>
         </tr>
@@ -53,8 +53,8 @@
           <td>{{ post.content }}</td>
           <td>{{ post.date | formatMediumDatetime }}</td>
           <td>
-            <div *ngIf="post.author">
-              <a [routerLink]="['/profile', post.author.id, 'view']">{{ post.author?.name }}</a>
+            <div *ngIf="post.profile">
+              <a [routerLink]="['/profile', post.profile.id, 'view']">{{ post.profile?.name }}</a>
             </div>
           </td>
           <td class="text-end">

@@ -1,0 +1,26 @@
+entity Profile {
+  name String required minlength(3)
+}
+
+entity Post {
+  title String required
+  content TextBlob required
+  date Instant required
+}
+
+entity Tag {
+  name String required minlength(2)
+}
+
+relationship ManyToOne {
+  Post{profile(name)} to Profile{post(title)}
+}
+relationship OneToOne {
+  Profile{user(login)} to User
+}
+relationship ManyToMany {
+  Post{tag(name)} to Tag{entry}
+  Profile{folowers(name)} to Profile{folowing(name)}
+}
+
+paginate Post, Tag, Profile with infinite-scroll

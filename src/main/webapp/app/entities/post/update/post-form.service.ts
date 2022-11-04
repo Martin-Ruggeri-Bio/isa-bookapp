@@ -27,16 +27,15 @@ type PostFormRawValue = FormValueOf<IPost>;
 
 type NewPostFormRawValue = FormValueOf<NewPost>;
 
-type PostFormDefaults = Pick<NewPost, 'id' | 'date' | 'tags' | 'likes'>;
+type PostFormDefaults = Pick<NewPost, 'id' | 'date' | 'tags'>;
 
 type PostFormGroupContent = {
   id: FormControl<PostFormRawValue['id'] | NewPost['id']>;
   title: FormControl<PostFormRawValue['title']>;
   content: FormControl<PostFormRawValue['content']>;
   date: FormControl<PostFormRawValue['date']>;
-  author: FormControl<PostFormRawValue['author']>;
+  profile: FormControl<PostFormRawValue['profile']>;
   tags: FormControl<PostFormRawValue['tags']>;
-  likes: FormControl<PostFormRawValue['likes']>;
 };
 
 export type PostFormGroup = FormGroup<PostFormGroupContent>;
@@ -65,9 +64,8 @@ export class PostFormService {
       date: new FormControl(postRawValue.date, {
         validators: [Validators.required],
       }),
-      author: new FormControl(postRawValue.author),
+      profile: new FormControl(postRawValue.profile),
       tags: new FormControl(postRawValue.tags ?? []),
-      likes: new FormControl(postRawValue.likes ?? []),
     });
   }
 
@@ -92,7 +90,6 @@ export class PostFormService {
       id: null,
       date: currentTime,
       tags: [],
-      likes: [],
     };
   }
 
@@ -110,7 +107,6 @@ export class PostFormService {
       ...post,
       date: post.date ? post.date.format(DATE_TIME_FORMAT) : undefined,
       tags: post.tags ?? [],
-      likes: post.likes ?? [],
     };
   }
 }

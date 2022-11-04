@@ -22,7 +22,7 @@ public class PostRepositoryWithBagRelationshipsImpl implements PostRepositoryWit
 
     @Override
     public Optional<Post> fetchBagRelationships(Optional<Post> post) {
-        return post.map(this::fetchTags).map(this::fetchLikes);
+        return post.map(this::fetchTags);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PostRepositoryWithBagRelationshipsImpl implements PostRepositoryWit
 
     @Override
     public List<Post> fetchBagRelationships(List<Post> posts) {
-        return Optional.of(posts).map(this::fetchTags).map(this::fetchLikes).orElse(Collections.emptyList());
+        return Optional.of(posts).map(this::fetchTags).orElse(Collections.emptyList());
     }
 
     Post fetchTags(Post result) {
@@ -48,26 +48,6 @@ public class PostRepositoryWithBagRelationshipsImpl implements PostRepositoryWit
         IntStream.range(0, posts.size()).forEach(index -> order.put(posts.get(index).getId(), index));
         List<Post> result = entityManager
             .createQuery("select distinct post from Post post left join fetch post.tags where post in :posts", Post.class)
-            .setParameter("posts", posts)
-            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
-            .getResultList();
-        Collections.sort(result, (o1, o2) -> Integer.compare(order.get(o1.getId()), order.get(o2.getId())));
-        return result;
-    }
-
-    Post fetchLikes(Post result) {
-        return entityManager
-            .createQuery("select post from Post post left join fetch post.likes where post is :post", Post.class)
-            .setParameter("post", result)
-            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
-            .getSingleResult();
-    }
-
-    List<Post> fetchLikes(List<Post> posts) {
-        HashMap<Object, Integer> order = new HashMap<>();
-        IntStream.range(0, posts.size()).forEach(index -> order.put(posts.get(index).getId(), index));
-        List<Post> result = entityManager
-            .createQuery("select distinct post from Post post left join fetch post.likes where post in :posts", Post.class)
             .setParameter("posts", posts)
             .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
             .getResultList();

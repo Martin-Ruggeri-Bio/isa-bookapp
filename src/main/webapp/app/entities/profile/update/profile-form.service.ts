@@ -14,14 +14,13 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type ProfileFormGroupInput = IProfile | PartialWithRequiredKeyOf<NewProfile>;
 
-type ProfileFormDefaults = Pick<NewProfile, 'id' | 'folowers' | 'likes' | 'folowings'>;
+type ProfileFormDefaults = Pick<NewProfile, 'id' | 'folowers' | 'folowings'>;
 
 type ProfileFormGroupContent = {
   id: FormControl<IProfile['id'] | NewProfile['id']>;
   name: FormControl<IProfile['name']>;
   user: FormControl<IProfile['user']>;
   folowers: FormControl<IProfile['folowers']>;
-  likes: FormControl<IProfile['likes']>;
   folowings: FormControl<IProfile['folowings']>;
 };
 
@@ -47,7 +46,6 @@ export class ProfileFormService {
       }),
       user: new FormControl(profileRawValue.user),
       folowers: new FormControl(profileRawValue.folowers ?? []),
-      likes: new FormControl(profileRawValue.likes ?? []),
       folowings: new FormControl(profileRawValue.folowings ?? []),
     });
   }
@@ -70,7 +68,6 @@ export class ProfileFormService {
     return {
       id: null,
       folowers: [],
-      likes: [],
       folowings: [],
     };
   }

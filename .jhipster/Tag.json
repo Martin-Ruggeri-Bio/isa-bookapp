@@ -1,5 +1,5 @@
 {
-  "applications": ["bookapp"],
+  "applications": "*",
   "changelogDate": "20221015152746",
   "dto": "no",
   "embedded": false,
@@ -26,5 +26,5 @@
       "relationshipType": "many-to-many"
     }
   ],
-  "service": "serviceClass"
+  "service": "no"
 }
